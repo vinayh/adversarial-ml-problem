@@ -36,9 +36,9 @@ class AdversarialGenerator:
             - Run preprocessed image with noise through model
             - Optimizer step to reduce loss wrt target label and increase loss wrt original label
         """
-        num_iterations = 50
+        num_iterations = 100
         delta = torch.zeros_like(image, requires_grad=True)
-        optimizer = torch.optim.SGD([delta], lr=1e-2)
+        optimizer = torch.optim.SGD([delta], lr=2e-2)
         for i in range(num_iterations):
             optimizer.zero_grad()
             adv_image = self.preprocess(image + delta)
@@ -46,7 +46,13 @@ class AdversarialGenerator:
             loss = F.cross_entropy(out, torch.tensor([target_label])) - F.cross_entropy(out, torch.tensor([orig_label]))
             loss.backward()
             optimizer.step()
+        print('image nan?', torch.any(image.isnan()), 'delta nan?', torch.any(delta.isnan()))
+        delta = torch.nan_to_num(delta)
+        ratio_changes = (delta / (image + 1e-7)).abs()
+        delta[ratio_changes > 2] = 0
+        # print('ratio changes', ratio_changes, max_ratio_change)
         return delta
+        # return torch.clamp(delta.nan_to_num(), -1e2, 1e2)
     
     def forward_with_adversarial(self, image: Image.Image, target_label: int) -> tuple[
             torch.return_types.topk, torch.Tensor, torch.Tensor, torch.return_types.topk]:
@@ -59,6 +65,7 @@ class AdversarialGenerator:
         target_label = torch.tensor([target_label])
         image_t = T.ToTensor()(image)
         noise_t = self.adversarial_noise(image_t, orig_label, target_label)
+        # adversarial_image_t = image_t + noise_t * (0.005 * image_t.norm() / noise_t.norm())
         adversarial_image_t = image_t + noise_t
         adversarial_preds = self.forward(adversarial_image_t)
         to_PIL_Image = T.ToPILImage()

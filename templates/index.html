@@ -3,17 +3,23 @@
 {% block content %}
 <h1>Adversarial image generator</h1>
 
+<hr>
+
+<h3>Forward pass predictions</h3>
 <form action="/predict" enctype="multipart/form-data" method="POST">
     <input name="image" type="file">
     <input type="submit" value="Predict label">
 </form>
-<br>
+
+<hr>
+
+<h3>Generate adversarial example</h3>
 <form action="/adversarial" enctype="multipart/form-data" method="POST">
     <input name="image" type="file">
     <label>
-        <input name="targetLabel" type="number">
         Target label
+        <input name="targetLabel" type="number">
     </label>
-    <input type="submit" value="Gen adversarial example">
+    <input type="submit" value="Generate adversarial example">
 </form>
 {% endblock %}
