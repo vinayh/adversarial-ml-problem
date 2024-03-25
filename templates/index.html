@@ -7,6 +7,10 @@
 <body>
     <h1>Adversarial image generator</h1>
 
+    <form method="POST" enctype="multipart/form-data" action="/predict">
+        <input type="file" name="image">
+        <input type="submit" value="Predict label">
+    </form>
 </body>
 
 </html>

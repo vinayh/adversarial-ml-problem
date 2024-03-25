@@ -1,6 +1,10 @@
 import json
 
-from flask import Flask, render_template
+from flask import Flask, request, render_template
+from PIL import Image
+
+from adversarial import AdversarialGenerator
+
 
 def read_imagenet_labels(path: str) -> dict[int, [str, str]]:
     with open(path) as json_data:
@@ -17,5 +21,13 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/predict", methods=["POST"])
+def predict():
+    orig_image = Image.open(request.files["image"])
+    orig_preds = adversarial_generator.forward(orig_image)
+    return str(orig_preds)
+    
+
 if __name__ == "__main__":
+    adversarial_generator = AdversarialGenerator()
     app.run()

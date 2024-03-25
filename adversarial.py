@@ -19,4 +19,4 @@ class AdversarialGenerator:
         preprocessed = self.preprocess(image)
         out = self.model(torch.unsqueeze(preprocessed, 0)).squeeze(0)
         probs = F.softmax(out)
-        return torch.topk(probs, k=5, sorted=True)
+        return torch.topk(probs.detach(), k=5, sorted=True)
