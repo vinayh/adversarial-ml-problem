@@ -7,12 +7,25 @@
 <body>
     <h1>Original predictions</h1>
 
+    Original image:
+    <br>
+    <img alt="original image" src="static/orig_image.png" />
+
     {% for pred in orig_preds %}
         <br>
         {{ pred[0] }} - {{ pred[1] }}
     {% endfor %}
 
     <h1>Adversarial predictions</h1>
+    Target label: {{ target_label }}
+    <br>
+    Noise:
+    <br>
+    <img alt="noise" src="static/noise.png" />
+    <br>
+    Adversarial image:
+    <br>
+    <img alt="adversarial image" src="static/adv_image.png" />
     <br>
     {% for pred in adv_preds %}
         <br>

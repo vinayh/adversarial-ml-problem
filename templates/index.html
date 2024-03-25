@@ -5,12 +5,21 @@
 </head>
 
 <body>
-    <h1>Adversarial image generator</h1>
+<h1>Adversarial image generator</h1>
 
-    <form method="POST" enctype="multipart/form-data" action="/predict">
-        <input type="file" name="image">
-        <input type="submit" value="Predict label">
-    </form>
+<form action="/predict" enctype="multipart/form-data" method="POST">
+    <input name="image" type="file">
+    <input type="submit" value="Predict label">
+</form>
+
+<form action="/adversarial" enctype="multipart/form-data" method="POST">
+    <input name="image" type="file">
+    <label>
+        <input name="targetLabel" type="number">
+        Target label
+    </label>
+    <input type="submit" value="Gen adversarial example">
+</form>
 </body>
 
 </html>

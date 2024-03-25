@@ -12,7 +12,7 @@ class AdversarialGenerator:
                  weights=RegNet_X_800MF_Weights.IMAGENET1K_V2,
                  epsilon=0.1):
         self.epsilon = epsilon
-        self.model = model(weights)
+        self.model = model(weights=weights)
         self.model.eval()
         self.preprocess = weights.transforms()
         torch.manual_seed(1748)
@@ -23,11 +23,12 @@ class AdversarialGenerator:
         top-k (k=5) predictions with softmax probabilities
         """
         preprocessed = self.preprocess(image)
-        out = self.model(torch.unsqueeze(preprocessed, 0)).squeeze(0)
-        probs = F.softmax(out)
+        out = self.model(torch.unsqueeze(preprocessed, dim=0)).squeeze(0)
+        probs = F.softmax(out, dim=0)
         return torch.topk(probs.detach(), k=5, sorted=True)
     
-    def adversarial_noise(self, image: torch.Tensor, orig_label: torch.Tensor, target_label: torch.Tensor) -> torch.Tensor:
+    def adversarial_noise(self, image: torch.Tensor, orig_label: torch.Tensor,
+                          target_label: torch.Tensor) -> torch.Tensor:
         """
         Runs PGD attack (iterations of gradient descent similar to FGSM)
         - Init noise tensor (delta) and optimizer
@@ -41,13 +42,14 @@ class AdversarialGenerator:
         for i in range(num_iterations):
             optimizer.zero_grad()
             adv_image = self.preprocess(image + delta)
-            out = self.model(torch.unsqueeze(adv_image, 0))
+            out = self.model(torch.unsqueeze(adv_image, dim=0))
             loss = F.cross_entropy(out, torch.tensor([target_label])) - F.cross_entropy(out, torch.tensor([orig_label]))
             loss.backward()
             optimizer.step()
         return delta
     
-    def forward_with_adversarial(self, image: Image.Image, target_label: int):
+    def forward_with_adversarial(self, image: Image.Image, target_label: int) -> tuple[
+            torch.return_types.topk, torch.Tensor, torch.Tensor, torch.return_types.topk]:
         """
         Runs forward pass to find original labels, generates adversarial noise to classify as target label
         Returns original predictions, noise tensor, adversarial image, and new adversarial predictions
@@ -55,10 +57,9 @@ class AdversarialGenerator:
         orig_preds = self.forward(image)
         orig_label = orig_preds.indices[0]  # Top pred label of original image
         target_label = torch.tensor([target_label])
-        image_t = T.ToTensor()(image) ##
+        image_t = T.ToTensor()(image)
         noise_t = self.adversarial_noise(image_t, orig_label, target_label)
         adversarial_image_t = image_t + noise_t
         adversarial_preds = self.forward(adversarial_image_t)
-        return orig_preds, noise_t, adversarial_image_t, adversarial_preds
-        
-    
+        to_PIL_Image = T.ToPILImage()
+        return orig_preds, to_PIL_Image(noise_t), to_PIL_Image(adversarial_image_t), adversarial_preds
