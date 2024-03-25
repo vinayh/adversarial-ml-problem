@@ -1,17 +1,13 @@
-<html lang="en">
-
-<head>
-    <title>Adversarial image generator</title>
-</head>
-
-<body>
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
 <h1>Adversarial image generator</h1>
 
 <form action="/predict" enctype="multipart/form-data" method="POST">
     <input name="image" type="file">
     <input type="submit" value="Predict label">
 </form>
-
+<br>
 <form action="/adversarial" enctype="multipart/form-data" method="POST">
     <input name="image" type="file">
     <label>
@@ -20,6 +16,4 @@
     </label>
     <input type="submit" value="Gen adversarial example">
 </form>
-</body>
-
-</html>
+{% endblock %}

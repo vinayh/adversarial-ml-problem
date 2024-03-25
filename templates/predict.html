@@ -1,16 +1,24 @@
-<html lang="en">
-
-<head>
-    <title>Adversarial image generator</title>
-</head>
-
-<body>
+{% extends "layout.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% block content %}
     <h1>Forward pass predictions</h1>
-
     {% for pred in orig_preds %}
         <br>
-        {{ pred[0] }} - {{ pred[1] }}
-    {% endfor %}
-</body>
 
-</html>
+    <table>
+      <tr>
+        <th>Label</th>
+        <th>Confidence</th>
+      </tr>
+        {% for pred in orig_preds %}
+          <tr>
+            <td>{{ pred[0] }}</td>
+            <td>{{ pred[1] }}</td>
+          </tr>
+        {% endfor %}
+    </table>
+{% endfor %}
+{% endblock %}

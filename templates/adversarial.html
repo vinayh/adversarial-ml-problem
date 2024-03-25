@@ -1,22 +1,27 @@
-<html lang="en">
+{% extends "layout.html" %}
+{% block title %}Adversarial{% endblock %}
+{% block content %}
+<h1>Adversarial noise generation</h1>
 
-<head>
-    <title>Adversarial image generator</title>
-</head>
-
-<body>
-    <h1>Original predictions</h1>
-
+    <h2>Original predictions</h2>
     Original image:
     <br>
     <img alt="original image" src="static/orig_image.png" />
 
-    {% for pred in orig_preds %}
-        <br>
-        {{ pred[0] }} - {{ pred[1] }}
-    {% endfor %}
+    <table>
+      <tr>
+        <th>Label</th>
+        <th>Confidence</th>
+      </tr>
+        {% for pred in orig_preds %}
+          <tr>
+            <td>{{ pred[0] }}</td>
+            <td>{{ pred[1] }}</td>
+          </tr>
+        {% endfor %}
+    </table>
 
-    <h1>Adversarial predictions</h1>
+    <h2>Adversarial predictions</h2>
     Target label: {{ target_label }}
     <br>
     Noise:
@@ -26,11 +31,17 @@
     Adversarial image:
     <br>
     <img alt="adversarial image" src="static/adv_image.png" />
-    <br>
-    {% for pred in adv_preds %}
-        <br>
-        {{ pred[0] }} - {{ pred[1] }}
-    {% endfor %}
-</body>
 
-</html>
+    <table>
+      <tr>
+        <th>Label</th>
+        <th>Confidence</th>
+      </tr>
+        {% for pred in adv_preds %}
+          <tr>
+            <td>{{ pred[0] }}</td>
+            <td>{{ pred[1] }}</td>
+          </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
