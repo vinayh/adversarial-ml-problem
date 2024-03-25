@@ -45,7 +45,7 @@ class AdversarialGenerator:
         """
         num_iterations = 100
         delta = torch.zeros_like(image, requires_grad=True)
-        optimizer = torch.optim.SGD([delta], lr=1e-2)
+        optimizer = torch.optim.SGD([delta], lr=5e-3)
         for i in range(num_iterations):
             optimizer.zero_grad()
             adv_image = self.preprocess(image + delta)
@@ -56,7 +56,9 @@ class AdversarialGenerator:
                 torch.nn.utils.clip_grad_norm_(delta, self.clip_grad_norm)
             optimizer.step()
         if self.final_clip_epsilon is not None:
-            return torch.clamp(delta.nan_to_num(), -self.final_clip_epsilon, self.final_clip_epsilon)
+            return torch.clamp(delta, -self.final_clip_epsilon, self.final_clip_epsilon)
+        else:
+            return delta
         
     def forward_with_adversarial(self, image: Image.Image, target_label: int) -> tuple[
             torch.return_types.topk, torch.Tensor, torch.Tensor, torch.return_types.topk]:
