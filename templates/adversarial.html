@@ -1,0 +1,23 @@
+<html lang="en">
+
+<head>
+    <title>Adversarial image generator</title>
+</head>
+
+<body>
+    <h1>Original predictions</h1>
+
+    {% for pred in orig_preds %}
+        <br>
+        {{ pred[0] }} - {{ pred[1] }}
+    {% endfor %}
+
+    <h1>Adversarial predictions</h1>
+    <br>
+    {% for pred in adv_preds %}
+        <br>
+        {{ pred[0] }} - {{ pred[1] }}
+    {% endfor %}
+</body>
+
+</html>
