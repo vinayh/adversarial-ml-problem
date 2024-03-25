@@ -15,5 +15,5 @@ Otherwise, the adversarial example generator can be used through the `Adversaria
 - Explore training of noise tensor further to improve hyperparameters and architectural improvements
 - Add more unit tests to make code more robust to changes
 - Add more comprehensive end-to-end tests that better examine robustness across different images and target labels
-- Evaluate effect of adjusting epsilon value (clipping of noise tensor) vs. target label confidence and other metrics
+- Evaluate effect of adjusting 1. epsilon value for clipping of noise tensor and 2. delta grad norm clip value, versus target label confidence and other metrics
 - Improve code documentation: docstrings, type annotations where missing, etc.

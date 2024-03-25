@@ -7,8 +7,7 @@ from adversarial import AdversarialGenerator
 
 def test_forward():
     adversarial_generator = AdversarialGenerator(model=regnet_x_800mf,
-                                                 weights=RegNet_X_800MF_Weights.IMAGENET1K_V2,
-                                                 epsilon=0.1)
+                                                 weights=RegNet_X_800MF_Weights.IMAGENET1K_V2)
     orig_image = Image.open("./static/n01677366_common_iguana.jpg")
     topk_preds = adversarial_generator.forward(orig_image)
     assert torch.all(
@@ -17,10 +16,9 @@ def test_forward():
 
 
 def test_forward_with_adversarial():
-    target_labels = [450, 192, 314]
+    target_labels = [450, 314, 309]
     adversarial_generator = AdversarialGenerator(model=regnet_x_800mf,
-                                                 weights=RegNet_X_800MF_Weights.IMAGENET1K_V2,
-                                                 epsilon=0.1)
+                                                 weights=RegNet_X_800MF_Weights.IMAGENET1K_V2)
     orig_image = Image.open("./static/n01677366_common_iguana.jpg")
     for t in target_labels:
         orig_preds, noise, adv_image, adv_preds = adversarial_generator.forward_with_adversarial(orig_image,
